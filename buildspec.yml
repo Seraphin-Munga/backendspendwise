@@ -5,19 +5,53 @@ phases:
     commands:
       # Commands to install .NET 9 SDK using Microsoft's install script
       - curl -L https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --version 9.0.100
-      # Add the newly installed dotnet directory to the PATH
+      # Add the newly installed dotnet directory to the PATH and verify
       - export PATH=$PATH:$HOME/.dotnet
-      - dotnet --version
+      - echo "PATH updated: $PATH"
+      - $HOME/.dotnet/dotnet --version || dotnet --version
   pre_build:
     commands:
       - echo Restoring NuGet packages
-      - dotnet restore SpendWiseApi.sln
+      - export PATH=$PATH:$HOME/.dotnet
+      - echo Current directory
+      - pwd
+      - echo Checking for solution file
+      - ls -la *.sln 2>/dev/null || find . -maxdepth 2 -name "*.sln" -type f | head -5
+      - |
+        export PATH=$PATH:$HOME/.dotnet
+        if [ -f "SpendWiseApi.sln" ]; then
+          dotnet restore SpendWiseApi.sln
+        else
+          echo "Solution file not found in current directory, searching..."
+          SOLUTION_FILE=$(find . -maxdepth 2 -name "SpendWiseApi.sln" -type f | head -1)
+          if [ -n "$SOLUTION_FILE" ]; then
+            echo "Found solution file at: $SOLUTION_FILE"
+            dotnet restore "$SOLUTION_FILE"
+          else
+            echo "ERROR: SpendWiseApi.sln not found"
+            exit 1
+          fi
+        fi
   build:
     commands:
       # Use the dotnet CLI to build your project
-      - dotnet build SpendWiseApi.sln -c Release
+      - |
+        export PATH=$PATH:$HOME/.dotnet
+        if [ -f "SpendWiseApi.sln" ]; then
+          dotnet build SpendWiseApi.sln -c Release
+        else
+          SOLUTION_FILE=$(find . -maxdepth 2 -name "SpendWiseApi.sln" -type f | head -1)
+          dotnet build "$SOLUTION_FILE" -c Release
+        fi
       - echo Publishing application
-      - dotnet publish SpendWiseApi/SpendWiseApi.csproj -c Release -o publish
+      - |
+        export PATH=$PATH:$HOME/.dotnet
+        if [ -d "SpendWiseApi" ]; then
+          dotnet publish SpendWiseApi/SpendWiseApi.csproj -c Release -o publish
+        else
+          PROJECT_DIR=$(find . -maxdepth 2 -type d -name "SpendWiseApi*" | head -1)
+          dotnet publish "$PROJECT_DIR/SpendWiseApi.csproj" -c Release -o publish
+        fi
       - echo Verifying publish output
       - ls -la publish
       - cd publish
