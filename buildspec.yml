@@ -18,15 +18,13 @@ phases:
       - dotnet --version
       - dotnet restore SpendWiseApi.sln
       - dotnet build SpendWiseApi.sln -c Release --no-restore
-      - dotnet publish SpendWiseApi/SpendWiseApi.csproj -c Release -o publish /p:SelfContained=false /p:GenerateRuntimeConfigurationFiles=true /p:RuntimeIdentifier=linux-x64
+      - dotnet publish SpendWiseApi/SpendWiseApi.csproj -c Release -o publish
       - echo "Checking publish output..."
       - ls -la publish/
       - echo "Listing all files in publish directory..."
       - find publish -type f -name "*.dll" -o -name "*.exe" -o -name "*.runtimeconfig.json" | head -20
-      - echo "Checking for existing runtimeconfig.json files..."
-      - 'ls -la publish/*.runtimeconfig.json 2>/dev/null || echo "No runtimeconfig.json found, will create one"'
-      - echo "Ensuring SpendWiseApi.runtimeconfig.json exists..."
-      - echo '{"runtimeOptions":{"tfm":"net9.0","framework":{"name":"Microsoft.AspNetCore.App","version":"9.0.0"},"configProperties":{"System.GC.Server":true,"System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization":false}}}' > publish/SpendWiseApi.runtimeconfig.json
+      - echo "Checking for automatically generated runtimeconfig.json files..."
+      - 'if ls publish/*.runtimeconfig.json 1> /dev/null 2>&1; then echo "SUCCESS: runtimeconfig.json was automatically generated"; ls -la publish/*.runtimeconfig.json; else echo "WARNING: runtimeconfig.json not auto-generated, creating manually..."; echo "{\"runtimeOptions\":{\"tfm\":\"net9.0\",\"framework\":{\"name\":\"Microsoft.AspNetCore.App\",\"version\":\"9.0.0\"},\"configProperties\":{\"System.GC.Server\":true,\"System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization\":false}}}" > publish/SpendWiseApi.runtimeconfig.json; fi'
       - echo "Verifying runtimeconfig.json was created..."
       - ls -la publish/SpendWiseApi.runtimeconfig.json
       - echo "Contents of runtimeconfig.json:"
