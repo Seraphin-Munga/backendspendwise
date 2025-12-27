@@ -7,17 +7,19 @@ phases:
     commands:
       - rm -f global.json || true
       - dotnet --version
-      - echo "Current directory: $(pwd)"
-      - echo "Listing files:"
+      - echo Current directory
+      - pwd
+      - echo Listing files
       - ls -la
-      - echo "Checking for solution file..."
+      - echo Checking for solution file
       - find . -name "*.sln" -type f || echo "No .sln files found in current directory"
 
   pre_build:
     commands:
       - echo "=== Pre-Build Phase ==="
-      - echo "Current directory: $(pwd)"
       - |
+        echo "Current directory:"
+        pwd
         # Find and navigate to directory containing solution file
         if [ -f "SpendWiseApi.sln" ]; then
           echo "Solution file found in current directory"
@@ -34,9 +36,9 @@ phases:
         fi
         echo "Working in directory: $(pwd)"
         echo "Solution file exists: $([ -f SpendWiseApi.sln ] && echo 'YES' || echo 'NO')"
-      - echo "Clearing NuGet cache..."
+      - echo Clearing NuGet cache
       - dotnet nuget locals all --clear || true
-      - echo "Restoring NuGet packages..."
+      - echo Restoring NuGet packages
       - |
         # Attempt restore with explicit source, fallback to default if it fails
         if dotnet restore SpendWiseApi.sln --source https://api.nuget.org/v3/index.json --verbosity normal; then
@@ -64,7 +66,7 @@ phases:
         fi
         echo "Building solution from: $(pwd)"
         dotnet build SpendWiseApi.sln -c Release --no-restore
-      - echo "Publishing application..."
+      - echo Publishing application
       - |
         # Ensure we're in the directory with the solution file
         if [ ! -f "SpendWiseApi.sln" ] && [ -f "../SpendWiseApi.sln" ]; then
@@ -78,12 +80,12 @@ phases:
           find . -maxdepth 3 -name "SpendWiseApi.csproj" -type f 2>/dev/null || echo "Not found"
           exit 1
         fi
-      - echo "Verifying publish output..."
+      - echo Verifying publish output
       - ls -la publish
       - cd publish
       - zip -r ../app-deploy.zip .
       - cd ..
-      - echo "Deployment package created"
+      - echo Deployment package created
       - ls -lh app-deploy.zip
 
 artifacts:
