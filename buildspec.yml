@@ -8,8 +8,8 @@ phases:
   pre_build:
     commands:
       - echo "Logging in to Amazon ECR..."
-      - aws --version
-      - echo "Current directory: $(pwd)"
+      - "aws --version"
+      - "echo \"Current directory: $(pwd)\""
       - echo "Listing files..."
       - ls -la
 
