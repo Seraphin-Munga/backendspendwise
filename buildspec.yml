@@ -26,32 +26,39 @@ phases:
       - echo "Checking for required files..."
       - test -f publish/SpendWiseApi.dll && echo "✓ SpendWiseApi.dll found" || echo "✗ SpendWiseApi.dll NOT found"
       - echo "Looking for runtimeconfig.json files..."
-      - find publish -name "*.runtimeconfig.json" -type f -exec echo "Found: {}" \; || echo "✗ No runtimeconfig.json files found"
-      - if [ ! -f publish/SpendWiseApi.runtimeconfig.json ]; then echo "✗ SpendWiseApi.runtimeconfig.json NOT found - creating it..." && cat > publish/SpendWiseApi.runtimeconfig.json << 'EOF'
-{
-  "runtimeOptions": {
-    "tfm": "net9.0",
-    "framework": {
-      "name": "Microsoft.AspNetCore.App",
-      "version": "9.0.0"
-    },
-    "configProperties": {
-      "System.GC.Server": true
-    }
-  }
-}
-EOF
-        echo "✓ Created SpendWiseApi.runtimeconfig.json"; else echo "✓ SpendWiseApi.runtimeconfig.json found"; fi
-      - echo "Final verification..."
-      - ls -lh publish/SpendWiseApi.runtimeconfig.json || echo "ERROR: runtimeconfig.json still missing"
+      - 'find publish -name "*.runtimeconfig.json" -type f -exec echo "Found: {}" \; || echo "No runtimeconfig.json files found"'
+      - echo "Ensuring runtimeconfig.json exists (always create/overwrite to be safe)..."
+      - |
+        printf '%s\n' '{"runtimeOptions":{"tfm":"net9.0","framework":{"name":"Microsoft.AspNetCore.App","version":"9.0.0"},"configProperties":{"System.GC.Server":true}}}' > publish/SpendWiseApi.runtimeconfig.json
+      - echo "✓ SpendWiseApi.runtimeconfig.json created/updated"
+      - echo "Final verification of runtimeconfig.json..."
+      - ls -lh publish/SpendWiseApi.runtimeconfig.json
+      - cat publish/SpendWiseApi.runtimeconfig.json
+      - echo "Verifying file is readable and valid JSON..."
+      - python3 -m json.tool publish/SpendWiseApi.runtimeconfig.json > /dev/null && echo "✓ Valid JSON" || echo "✗ Invalid JSON"
       - echo "Creating deployment package..."
       - cd publish
-      - zip -r ../app-deploy.zip .
+      - echo "Files to be zipped:"
+      - ls -la
+      - echo "Creating zip with all files..."
+      - zip -r ../app-deploy.zip . -v
       - cd ..
       - echo "Deployment package created"
       - echo "Verifying contents of zip file..."
-      - unzip -l app-deploy.zip | grep -i runtimeconfig || echo "WARNING: runtimeconfig.json not found in zip"
+      - echo "Checking for runtimeconfig.json in zip..."
+      - unzip -l app-deploy.zip | grep -i "runtimeconfig.json" && echo "✓ runtimeconfig.json found in zip" || echo "✗ WARNING: runtimeconfig.json NOT found in zip"
+      - echo "Listing all files in zip (first 50):"
+      - unzip -l app-deploy.zip | head -50
       - ls -lh app-deploy.zip
+      - echo "Final check: extracting and verifying runtimeconfig.json..."
+      - unzip -q app-deploy.zip -d /tmp/zip-check 2>/dev/null || true
+      - |
+        if [ -f /tmp/zip-check/SpendWiseApi.runtimeconfig.json ]; then
+          echo "CONFIRMED: runtimeconfig.json exists in zip package"
+        else
+          echo "ERROR: runtimeconfig.json missing from zip package"
+        fi
+      - rm -rf /tmp/zip-check
 
 artifacts:
   files:
