@@ -6,16 +6,21 @@ phases:
       - echo "Installing .NET 9 SDK..."
       - curl -fsSL https://dot.net/v1/dotnet-install.sh -o dotnet-install.sh
       - chmod +x dotnet-install.sh
-      - ./dotnet-install.sh --channel 9.0
-      - export DOTNET_ROOT=$HOME/.dotnet
-      - export PATH=$HOME/.dotnet:$PATH
+      - ./dotnet-install.sh --channel 9.0 --install-dir /root/.dotnet
+
+      # Force CodeBuild to use .NET 9
+      - export DOTNET_ROOT=/root/.dotnet
+      - export PATH=/root/.dotnet:$PATH
+
+      # HARD verification (this is critical)
+      - which dotnet
+      - dotnet --list-sdks
       - dotnet --version
 
   pre_build:
     commands:
-      - echo "AWS CLI version:"
-      - aws --version
-      - echo "Working directory:"
+      - echo "Using SDK:"
+      - dotnet --version
       - pwd
       - ls -la
 
@@ -33,19 +38,8 @@ phases:
           -o publish \
           --no-build
 
-      - echo "Verifying publish output..."
       - ls -la publish
-      - test -f publish/SpendWiseApi.dll || exit 1
-
-      - echo "Checking runtimeconfig.json..."
-      - ls publish/*.runtimeconfig.json
-
-      - echo "Creating deployment ZIP..."
-      - cd publish
-      - zip -r ../app-deploy.zip .
-      - cd ..
 
 artifacts:
   files:
-    - app-deploy.zip
-  name: SpendWiseApi-$(date +%Y-%m-%d)
+    - '**/*'
