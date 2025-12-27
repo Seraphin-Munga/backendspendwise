@@ -1,0 +1,40 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      dotnet: 9.0
+
+  pre_build:
+    commands:
+      - echo "Logging in to Amazon ECR..."
+      - aws --version
+      - echo "Current directory: $(pwd)"
+      - echo "Listing files..."
+      - ls -la
+
+  build:
+    commands:
+      - echo "Restoring NuGet packages..."
+      - dotnet restore SpendWiseApi.sln
+      - echo "Building solution..."
+      - dotnet build SpendWiseApi.sln -c Release --no-restore
+      - echo "Publishing application..."
+      - dotnet publish SpendWiseApi/SpendWiseApi.csproj -c Release -o publish --no-restore /p:GenerateRuntimeConfigurationFiles=true
+      - echo "Verifying publish output..."
+      - ls -la publish/
+      - echo "Checking for required files..."
+      - test -f publish/SpendWiseApi.dll && echo "✓ SpendWiseApi.dll found" || echo "✗ SpendWiseApi.dll NOT found"
+      - test -f publish/SpendWiseApi.runtimeconfig.json && echo "✓ SpendWiseApi.runtimeconfig.json found" || echo "✗ SpendWiseApi.runtimeconfig.json NOT found"
+      - echo "Creating deployment package..."
+      - cd publish
+      - zip -r ../app-deploy.zip .
+      - cd ..
+      - echo "Deployment package created"
+      - ls -lh app-deploy.zip
+
+artifacts:
+  files:
+    - app-deploy.zip
+  name: SpendWiseApi-$(date +%Y-%m-%d)
+

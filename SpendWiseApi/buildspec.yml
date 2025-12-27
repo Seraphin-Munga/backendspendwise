@@ -7,11 +7,21 @@ phases:
 
   build:
     commands:
-      - dotnet restore
-      - dotnet publish -c Release -o publish
+      - echo "Current directory: $(pwd)"
+      - echo "Restoring solution..."
+      - dotnet restore SpendWiseApi.sln || dotnet restore ../SpendWiseApi.sln
+      - echo "Publishing application..."
+      - dotnet publish SpendWiseApi/SpendWiseApi.csproj -c Release -o publish --no-restore || dotnet publish SpendWiseApi.csproj -c Release -o publish --no-restore
+      - echo "Verifying publish output..."
+      - ls -la publish/
+      - echo "Checking for runtimeconfig.json..."
+      - ls -la publish/*.runtimeconfig.json || echo "WARNING: runtimeconfig.json not found"
+      - echo "Creating deployment package..."
       - cd publish
       - zip -r ../app-deploy.zip .
       - cd ..
+      - echo "Deployment package created"
+      - ls -lh app-deploy.zip
 
 artifacts:
   files:
