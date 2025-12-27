@@ -24,4 +24,9 @@
     <ProjectReference Include="..\SpendWiseApi.Service\SpendWiseApi.Service.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="src/**" />
+    <Content Remove="src/**" />
+  </ItemGroup>
+
 </Project>
