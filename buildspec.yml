@@ -19,18 +19,38 @@ phases:
       - dotnet restore SpendWiseApi.sln
       - echo "Building solution..."
       - dotnet build SpendWiseApi.sln -c Release --no-restore
-      - echo "Publishing application..."
-      - dotnet publish SpendWiseApi/SpendWiseApi.csproj -c Release -o publish --no-restore /p:GenerateRuntimeConfigurationFiles=true
+      - echo "Publishing application (framework-dependent deployment)..."
+      - dotnet publish SpendWiseApi/SpendWiseApi.csproj -c Release -o publish /p:SelfContained=false /p:GenerateRuntimeConfigurationFiles=true
       - echo "Verifying publish output..."
       - ls -la publish/
       - echo "Checking for required files..."
       - test -f publish/SpendWiseApi.dll && echo "✓ SpendWiseApi.dll found" || echo "✗ SpendWiseApi.dll NOT found"
-      - test -f publish/SpendWiseApi.runtimeconfig.json && echo "✓ SpendWiseApi.runtimeconfig.json found" || echo "✗ SpendWiseApi.runtimeconfig.json NOT found"
+      - echo "Looking for runtimeconfig.json files..."
+      - find publish -name "*.runtimeconfig.json" -type f -exec echo "Found: {}" \; || echo "✗ No runtimeconfig.json files found"
+      - if [ ! -f publish/SpendWiseApi.runtimeconfig.json ]; then echo "✗ SpendWiseApi.runtimeconfig.json NOT found - creating it..." && cat > publish/SpendWiseApi.runtimeconfig.json << 'EOF'
+{
+  "runtimeOptions": {
+    "tfm": "net9.0",
+    "framework": {
+      "name": "Microsoft.AspNetCore.App",
+      "version": "9.0.0"
+    },
+    "configProperties": {
+      "System.GC.Server": true
+    }
+  }
+}
+EOF
+        echo "✓ Created SpendWiseApi.runtimeconfig.json"; else echo "✓ SpendWiseApi.runtimeconfig.json found"; fi
+      - echo "Final verification..."
+      - ls -lh publish/SpendWiseApi.runtimeconfig.json || echo "ERROR: runtimeconfig.json still missing"
       - echo "Creating deployment package..."
       - cd publish
       - zip -r ../app-deploy.zip .
       - cd ..
       - echo "Deployment package created"
+      - echo "Verifying contents of zip file..."
+      - unzip -l app-deploy.zip | grep -i runtimeconfig || echo "WARNING: runtimeconfig.json not found in zip"
       - ls -lh app-deploy.zip
 
 artifacts:
