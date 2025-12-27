@@ -56,8 +56,8 @@ phases:
   build:
     commands:
       - echo "=== Build Phase ==="
-      - echo "Current directory: $(pwd)"
       - |
+        echo "Current directory: $(pwd)"
         # Ensure we're in the directory with the solution file
         if [ ! -f "SpendWiseApi.sln" ] && [ -f "../SpendWiseApi.sln" ]; then
           cd ..
