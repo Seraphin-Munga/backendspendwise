@@ -5,9 +5,10 @@ phases:
     commands:
       - wget https://dot.net/v1/dotnet-install.sh -O /tmp/dotnet-install.sh
       - chmod +x /tmp/dotnet-install.sh
-      - /tmp/dotnet-install.sh --version 9.0.0 --install-dir /usr/local/dotnet
-      - /tmp/dotnet-install.sh --version 9.0.0 --install-dir /usr/local/dotnet --runtime aspnetcore
+      - /tmp/dotnet-install.sh --channel 9.0 --install-dir /usr/local/dotnet
+      - /tmp/dotnet-install.sh --channel 9.0 --install-dir /usr/local/dotnet --runtime aspnetcore
       - export PATH="/usr/local/dotnet:$PATH"
+      - export DOTNET_ROOT="/usr/local/dotnet"
       - dotnet --version
 
   build:
