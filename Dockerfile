@@ -37,4 +37,3 @@ ENV ASPNETCORE_ENVIRONMENT=Production
 
 # Entry point
 ENTRYPOINT ["dotnet", "SpendWiseApi.dll"]
-
