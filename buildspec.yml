@@ -7,15 +7,13 @@ phases:
       - wget https://dot.net/v1/dotnet-install.sh -O /tmp/dotnet-install.sh
       - chmod +x /tmp/dotnet-install.sh
       - /tmp/dotnet-install.sh --channel 8.0 --install-dir /usr/local/dotnet
-      - export DOTNET_ROOT=/usr/local/dotnet
-      - export PATH=$DOTNET_ROOT:$PATH
-      - dotnet --version
+      - export DOTNET_ROOT=/usr/local/dotnet && export PATH=$DOTNET_ROOT:$PATH && dotnet --version
 
   build:
     commands:
       - ls -la
-      - dotnet restore SpendWiseApi.sln --source https://api.nuget.org/v3/index.json
-      - dotnet publish SpendWiseAPI/SpendWiseApi.csproj -c Release -o publish
+      - export DOTNET_ROOT=/usr/local/dotnet && export PATH=$DOTNET_ROOT:$PATH && dotnet restore SpendWiseApi.sln --source https://api.nuget.org/v3/index.json
+      - export DOTNET_ROOT=/usr/local/dotnet && export PATH=$DOTNET_ROOT:$PATH && dotnet publish SpendWiseAPI/SpendWiseApi.csproj -c Release -o publish
       - ls -la publish
       - cd publish
       - zip -r ../app-deploy.zip .
