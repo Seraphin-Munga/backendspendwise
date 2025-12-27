@@ -3,20 +3,88 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      dotnet: 8.0
+      dotnet: 9.0
     commands:
       - rm -f global.json || true
       - dotnet --version
+      - echo "Current directory: $(pwd)"
+      - echo "Listing files:"
+      - ls -la
+      - echo "Checking for solution file..."
+      - find . -name "*.sln" -type f || echo "No .sln files found in current directory"
+
+  pre_build:
+    commands:
+      - echo "=== Pre-Build Phase ==="
+      - echo "Current directory: $(pwd)"
+      - |
+        # Find and navigate to directory containing solution file
+        if [ -f "SpendWiseApi.sln" ]; then
+          echo "Solution file found in current directory"
+        elif [ -f "../SpendWiseApi.sln" ]; then
+          echo "Solution file found in parent directory, changing to parent"
+          cd ..
+        else
+          echo "ERROR: Solution file SpendWiseApi.sln not found"
+          echo "Searching for .sln files:"
+          find . -maxdepth 3 -name "*.sln" -type f 2>/dev/null || echo "No .sln files found"
+          echo "Contents of current directory:"
+          ls -la
+          exit 1
+        fi
+        echo "Working in directory: $(pwd)"
+        echo "Solution file exists: $([ -f SpendWiseApi.sln ] && echo 'YES' || echo 'NO')"
+      - echo "Clearing NuGet cache..."
+      - dotnet nuget locals all --clear || true
+      - echo "Restoring NuGet packages..."
+      - |
+        # Attempt restore with explicit source, fallback to default if it fails
+        if dotnet restore SpendWiseApi.sln --source https://api.nuget.org/v3/index.json --verbosity normal; then
+          echo "Restore completed successfully with explicit source"
+        else
+          echo "Restore with explicit source failed, trying with default NuGet sources..."
+          if dotnet restore SpendWiseApi.sln --verbosity normal; then
+            echo "Restore completed successfully with default sources"
+          else
+            echo "ERROR: Restore failed with both explicit and default sources"
+            echo "Checking NuGet sources:"
+            dotnet nuget list source || true
+            exit 1
+          fi
+        fi
 
   build:
     commands:
-      - ls -la
-      - dotnet restore SpendWiseApi.sln --source https://api.nuget.org/v3/index.json
-      - dotnet publish SpendWiseAPI/SpendWiseApi.csproj -c Release -o publish
+      - echo "=== Build Phase ==="
+      - echo "Current directory: $(pwd)"
+      - |
+        # Ensure we're in the directory with the solution file
+        if [ ! -f "SpendWiseApi.sln" ] && [ -f "../SpendWiseApi.sln" ]; then
+          cd ..
+        fi
+        echo "Building solution from: $(pwd)"
+        dotnet build SpendWiseApi.sln -c Release --no-restore
+      - echo "Publishing application..."
+      - |
+        # Ensure we're in the directory with the solution file
+        if [ ! -f "SpendWiseApi.sln" ] && [ -f "../SpendWiseApi.sln" ]; then
+          cd ..
+        fi
+        if [ -d "SpendWiseAPI" ]; then
+          dotnet publish SpendWiseAPI/SpendWiseApi.csproj -c Release -o publish --no-restore
+        else
+          echo "ERROR: SpendWiseAPI directory not found in $(pwd)"
+          echo "Searching for SpendWiseApi.csproj:"
+          find . -maxdepth 3 -name "SpendWiseApi.csproj" -type f 2>/dev/null || echo "Not found"
+          exit 1
+        fi
+      - echo "Verifying publish output..."
       - ls -la publish
       - cd publish
       - zip -r ../app-deploy.zip .
       - cd ..
+      - echo "Deployment package created"
+      - ls -lh app-deploy.zip
 
 artifacts:
   files:
