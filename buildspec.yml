@@ -21,4 +21,4 @@ phases:
 
 artifacts:
   files:
-    - publish/**/*
+    - 'bin/Release/net9.0/publish/**/*'
