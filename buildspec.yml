@@ -3,6 +3,7 @@ version: 0.2
 phases:
   install:
     commands:
+      - rm -f /codebuild/global.json || true
       - wget https://dot.net/v1/dotnet-install.sh -O /tmp/dotnet-install.sh
       - chmod +x /tmp/dotnet-install.sh
       - /tmp/dotnet-install.sh --channel 9.0 --install-dir /usr/local/dotnet
