@@ -3,7 +3,7 @@ version: 0.2
 phases:
   install:
     commands:
-      - rm -f /codebuild/global.json || true
+      - 'rm -f /codebuild/global.json || true'
       - wget https://dot.net/v1/dotnet-install.sh -O /tmp/dotnet-install.sh
       - chmod +x /tmp/dotnet-install.sh
       - /tmp/dotnet-install.sh --channel 9.0 --install-dir /usr/local/dotnet
@@ -22,7 +22,7 @@ phases:
       - echo "Checking publish output..."
       - ls -la publish/
       - echo "Checking for runtimeconfig.json files..."
-      - ls -la publish/*.runtimeconfig.json || echo "No runtimeconfig.json found, creating one..."
+      - 'ls -la publish/*.runtimeconfig.json || echo "No runtimeconfig.json found, creating one..."'
       - |
         if [ ! -f publish/SpendWiseApi.runtimeconfig.json ]; then
           echo "Creating SpendWiseApi.runtimeconfig.json..."
@@ -36,7 +36,7 @@ phases:
       - zip -r ../app-deploy.zip .
       - cd ..
       - echo "Verifying runtimeconfig.json is in zip..."
-      - unzip -l app-deploy.zip | grep runtimeconfig.json || echo "WARNING: runtimeconfig.json not found in zip"
+      - 'unzip -l app-deploy.zip | grep runtimeconfig.json || echo "WARNING: runtimeconfig.json not found in zip"'
 
 artifacts:
   files:
