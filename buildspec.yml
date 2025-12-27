@@ -36,6 +36,19 @@ phases:
         fi
         echo "Working in directory: $(pwd)"
         echo "Solution file exists: $([ -f SpendWiseApi.sln ] && echo 'YES' || echo 'NO')"
+        echo "Checking project directories:"
+        ls -la | grep -i spendwise || echo "No SpendWise directories found"
+        echo "Checking for SpendWiseApi directory:"
+        if [ -d "SpendWiseApi" ]; then
+          echo "SpendWiseApi directory found"
+          ls -la SpendWiseApi/ | head -10
+        elif [ -d "SpendWiseAPI" ]; then
+          echo "SpendWiseAPI directory found (different case)"
+          ls -la SpendWiseAPI/ | head -10
+        else
+          echo "ERROR: Neither SpendWiseApi nor SpendWiseAPI directory found"
+          find . -maxdepth 2 -type d -iname "*spendwise*" || echo "No SpendWise directories found"
+        fi
       - echo Clearing NuGet cache
       - dotnet nuget locals all --clear || true
       - echo Restoring NuGet packages
@@ -72,14 +85,20 @@ phases:
         if [ ! -f "SpendWiseApi.sln" ] && [ -f "../SpendWiseApi.sln" ]; then
           cd ..
         fi
-        if [ -d "SpendWiseAPI" ]; then
-          dotnet publish SpendWiseAPI/SpendWiseApi.csproj -c Release -o publish --no-restore
+        # Find the project directory (check SpendWiseApi first as that's what's in git)
+        PROJECT_DIR=""
+        if [ -d "SpendWiseApi" ]; then
+          PROJECT_DIR="SpendWiseApi"
+        elif [ -d "SpendWiseAPI" ]; then
+          PROJECT_DIR="SpendWiseAPI"
         else
-          echo "ERROR: SpendWiseAPI directory not found in $(pwd)"
+          echo "ERROR: SpendWiseApi/SpendWiseAPI directory not found in $(pwd)"
           echo "Searching for SpendWiseApi.csproj:"
           find . -maxdepth 3 -name "SpendWiseApi.csproj" -type f 2>/dev/null || echo "Not found"
           exit 1
         fi
+        echo "Using project directory: $PROJECT_DIR"
+        dotnet publish $PROJECT_DIR/SpendWiseApi.csproj -c Release -o publish --no-restore
       - echo Verifying publish output
       - ls -la publish
       - cd publish

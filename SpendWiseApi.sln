@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpendWiseApi", "SpendWiseAPI\SpendWiseApi.csproj", "{8421A5C7-48DF-4289-9B11-5B7771490F6B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpendWiseApi", "SpendWiseApi\SpendWiseApi.csproj", "{8421A5C7-48DF-4289-9B11-5B7771490F6B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpendWiseApi.Repository", "SpendWiseApi.Repository\SpendWiseApi.Repository.csproj", "{29A1E711-8EBC-426D-AAEB-47AA77F4578E}"
 EndProject
