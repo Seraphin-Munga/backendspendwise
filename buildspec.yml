@@ -3,44 +3,25 @@ version: 0.2
 phases:
   install:
     commands:
-      - 'rm -f /codebuild/global.json || true'
+      - rm -f /codebuild/global.json || true
       - wget https://dot.net/v1/dotnet-install.sh -O /tmp/dotnet-install.sh
       - chmod +x /tmp/dotnet-install.sh
-      - /tmp/dotnet-install.sh --channel 9.0 --install-dir /usr/local/dotnet
-      - /tmp/dotnet-install.sh --channel 9.0 --install-dir /usr/local/dotnet --runtime aspnetcore
-      - export PATH="/usr/local/dotnet:$PATH"
-      - export DOTNET_ROOT="/usr/local/dotnet"
+      - /tmp/dotnet-install.sh --channel 8.0 --install-dir /usr/local/dotnet
+      - export DOTNET_ROOT=/usr/local/dotnet
+      - export PATH=$DOTNET_ROOT:$PATH
       - dotnet --version
 
   build:
     commands:
-      - export PATH="/usr/local/dotnet:$PATH"
-      - dotnet --version
       - dotnet restore SpendWiseApi.sln
-      - dotnet build SpendWiseApi.sln -c Release --no-restore
       - dotnet publish SpendWiseApi/SpendWiseApi.csproj -c Release -o publish
-      - echo "Checking publish output..."
-      - ls -la publish/
-      - echo "Listing all files in publish directory..."
-      - find publish -type f -name "*.dll" -o -name "*.exe" -o -name "*.runtimeconfig.json" | head -20
-      - echo "Checking for automatically generated runtimeconfig.json files..."
-      - 'if ls publish/*.runtimeconfig.json 1> /dev/null 2>&1; then echo "SUCCESS: runtimeconfig.json was automatically generated"; ls -la publish/*.runtimeconfig.json; else echo "WARNING: runtimeconfig.json not auto-generated, creating manually..."; echo "{\"runtimeOptions\":{\"tfm\":\"net9.0\",\"framework\":{\"name\":\"Microsoft.AspNetCore.App\",\"version\":\"9.0.0\"},\"configProperties\":{\"System.GC.Server\":true,\"System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization\":false}}}" > publish/SpendWiseApi.runtimeconfig.json; fi'
-      - echo "Verifying runtimeconfig.json was created..."
-      - ls -la publish/SpendWiseApi.runtimeconfig.json
-      - echo "Contents of runtimeconfig.json:"
-      - cat publish/SpendWiseApi.runtimeconfig.json
-      - echo "Final file list before packaging:"
-      - ls -la publish/ | head -30
-      - echo "Checking for runtimeconfig.json before zip..."
-      - 'test -f publish/SpendWiseApi.runtimeconfig.json && echo "SUCCESS: runtimeconfig.json exists" || echo "ERROR: runtimeconfig.json missing!"'
+      - echo "Publish output:"
+      - ls -la publish
+      - echo "Verifying runtimeconfig.json:"
+      - ls publish/*.runtimeconfig.json
       - cd publish
-      - echo "Creating deployment package..."
       - zip -r ../app-deploy.zip .
       - cd ..
-      - echo "Verifying runtimeconfig.json is in zip..."
-      - 'unzip -l app-deploy.zip | grep -i runtimeconfig || echo "ERROR: runtimeconfig.json not found in zip!"'
-      - echo "Listing all files in zip (first 50):"
-      - 'unzip -l app-deploy.zip | head -50'
 
 artifacts:
   files:
