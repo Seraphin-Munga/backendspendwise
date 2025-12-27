@@ -18,14 +18,25 @@ phases:
       - dotnet --version
       - dotnet restore SpendWiseApi.sln
       - dotnet build SpendWiseApi.sln -c Release --no-restore
-      - dotnet publish SpendWiseApi/SpendWiseApi.csproj -c Release -o publish /p:SelfContained=false /p:GenerateRuntimeConfigurationFiles=true
+      - dotnet publish SpendWiseApi/SpendWiseApi.csproj -c Release -o publish /p:SelfContained=false /p:GenerateRuntimeConfigurationFiles=true /p:RuntimeIdentifier=linux-x64
+      - echo "Checking publish output..."
+      - ls -la publish/
+      - echo "Checking for runtimeconfig.json files..."
+      - ls -la publish/*.runtimeconfig.json || echo "No runtimeconfig.json found, creating one..."
       - |
         if [ ! -f publish/SpendWiseApi.runtimeconfig.json ]; then
-          echo '{"runtimeOptions":{"tfm":"net9.0","framework":{"name":"Microsoft.AspNetCore.App","version":"9.0.0"},"configProperties":{"System.GC.Server":true}}}' > publish/SpendWiseApi.runtimeconfig.json
+          echo "Creating SpendWiseApi.runtimeconfig.json..."
+          echo '{"runtimeOptions":{"tfm":"net9.0","framework":{"name":"Microsoft.AspNetCore.App","version":"9.0.0"},"configProperties":{"System.GC.Server":true,"System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization":false}}}' > publish/SpendWiseApi.runtimeconfig.json
         fi
+      - echo "Verifying runtimeconfig.json exists..."
+      - ls -la publish/SpendWiseApi.runtimeconfig.json
+      - cat publish/SpendWiseApi.runtimeconfig.json
       - cd publish
+      - echo "Creating deployment package..."
       - zip -r ../app-deploy.zip .
       - cd ..
+      - echo "Verifying runtimeconfig.json is in zip..."
+      - unzip -l app-deploy.zip | grep runtimeconfig.json || echo "WARNING: runtimeconfig.json not found in zip"
 
 artifacts:
   files:
