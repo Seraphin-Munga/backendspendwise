@@ -7,23 +7,16 @@ phases:
       - curl -fsSL https://dot.net/v1/dotnet-install.sh -o dotnet-install.sh
       - chmod +x dotnet-install.sh
       - ./dotnet-install.sh --channel 9.0 --install-dir /root/.dotnet
-
       - export DOTNET_ROOT=/root/.dotnet
       - export PATH=/root/.dotnet:$PATH
-
       - echo "SDKs installed:"
       - dotnet --list-sdks
-      - dotnet --version
 
   build:
     commands:
       - echo "Restoring solution..."
       - dotnet restore SpendWiseApi.sln
-
-      - echo "Building solution..."
-      - dotnet build SpendWiseApi.sln -c Release --no-restore
-
-      - echo "Publishing application..."
+      - echo "Publishing solution..."
       - dotnet publish SpendWiseApi.sln -c Release -o publish
 
 artifacts:
