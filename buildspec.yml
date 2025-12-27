@@ -7,7 +7,7 @@ phases:
       - curl -L https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --version 9.0.100
       # Add the newly installed dotnet directory to the PATH and verify
       - export PATH=$PATH:$HOME/.dotnet
-      - echo "PATH updated: $PATH"
+      - echo PATH updated
       - $HOME/.dotnet/dotnet --version || dotnet --version
   pre_build:
     commands:
