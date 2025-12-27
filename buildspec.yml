@@ -28,14 +28,18 @@ phases:
       - echo "Looking for runtimeconfig.json files..."
       - 'find publish -name "*.runtimeconfig.json" -type f -exec echo "Found: {}" \; || echo "No runtimeconfig.json files found"'
       - echo "Ensuring runtimeconfig.json exists (always create/overwrite to be safe)..."
-      - |
-        printf '%s\n' '{"runtimeOptions":{"tfm":"net9.0","framework":{"name":"Microsoft.AspNetCore.App","version":"9.0.0"},"configProperties":{"System.GC.Server":true}}}' > publish/SpendWiseApi.runtimeconfig.json
+      - 'python3 -c "import json; data={\"runtimeOptions\":{\"tfm\":\"net9.0\",\"framework\":{\"name\":\"Microsoft.AspNetCore.App\",\"version\":\"9.0.0\"},\"configProperties\":{\"System.GC.Server\":True}}; json.dump(data, open(\"publish/SpendWiseApi.runtimeconfig.json\", \"w\"), indent=2)"'
       - echo "✓ SpendWiseApi.runtimeconfig.json created/updated"
       - echo "Final verification of runtimeconfig.json..."
       - ls -lh publish/SpendWiseApi.runtimeconfig.json
+      - echo "File contents:"
       - cat publish/SpendWiseApi.runtimeconfig.json
       - echo "Verifying file is readable and valid JSON..."
       - python3 -m json.tool publish/SpendWiseApi.runtimeconfig.json > /dev/null && echo "✓ Valid JSON" || echo "✗ Invalid JSON"
+      - echo "Ensuring file has correct permissions..."
+      - chmod 644 publish/SpendWiseApi.runtimeconfig.json
+      - echo "Verifying both DLL and runtimeconfig.json exist..."
+      - test -f publish/SpendWiseApi.dll && test -f publish/SpendWiseApi.runtimeconfig.json && echo "✓ Both required files present" || echo "✗ Missing required files"
       - echo "Creating deployment package..."
       - cd publish
       - echo "Files to be zipped:"
