@@ -9,7 +9,8 @@ phases:
     commands:
       - echo "Logging in to Amazon ECR..."
       - aws --version
-      - echo "Current directory: $(pwd)"
+      - echo "Current directory:"
+      - pwd
       - echo "Listing files..."
       - ls -la
 
@@ -28,8 +29,22 @@ phases:
       - echo "Looking for runtimeconfig.json files..."
       - 'find publish -name "*.runtimeconfig.json" -type f -exec echo "Found: {}" \; || echo "No runtimeconfig.json files found"'
       - echo "Ensuring runtimeconfig.json exists (always create/overwrite to be safe)..."
-      - 'python3 -c "import json; data={\"runtimeOptions\":{\"tfm\":\"net9.0\",\"framework\":{\"name\":\"Microsoft.AspNetCore.App\",\"version\":\"9.0.0\"},\"configProperties\":{\"System.GC.Server\":True}}; json.dump(data, open(\"publish/SpendWiseApi.runtimeconfig.json\", \"w\"), indent=2)"'
-      - echo "✓ SpendWiseApi.runtimeconfig.json created/updated"
+      - |
+        RUNTIMECONFIG_FILE="publish/SpendWiseApi.runtimeconfig.json"
+        if command -v python3 >/dev/null 2>&1; then
+          python3 -c "import json; data={'runtimeOptions':{'tfm':'net9.0','framework':{'name':'Microsoft.AspNetCore.App','version':'9.0.0'},'configProperties':{'System.GC.Server':True}}; json.dump(data, open('$RUNTIMECONFIG_FILE', 'w'), indent=2)" || {
+            echo "Python failed, using echo fallback..."
+            echo '{"runtimeOptions":{"tfm":"net9.0","framework":{"name":"Microsoft.AspNetCore.App","version":"9.0.0"},"configProperties":{"System.GC.Server":true}}}' > "$RUNTIMECONFIG_FILE"
+          }
+        else
+          echo "Python not available, using echo to create runtimeconfig.json..."
+          echo '{"runtimeOptions":{"tfm":"net9.0","framework":{"name":"Microsoft.AspNetCore.App","version":"9.0.0"},"configProperties":{"System.GC.Server":true}}}' > "$RUNTIMECONFIG_FILE"
+        fi
+        if [ ! -f "$RUNTIMECONFIG_FILE" ]; then
+          echo "CRITICAL: Failed to create $RUNTIMECONFIG_FILE"
+          exit 1
+        fi
+        echo "✓ SpendWiseApi.runtimeconfig.json created/updated at: $RUNTIMECONFIG_FILE"
       - echo "Final verification of runtimeconfig.json..."
       - ls -lh publish/SpendWiseApi.runtimeconfig.json
       - echo "File contents:"
@@ -39,7 +54,20 @@ phases:
       - echo "Ensuring file has correct permissions..."
       - chmod 644 publish/SpendWiseApi.runtimeconfig.json
       - echo "Verifying both DLL and runtimeconfig.json exist..."
-      - test -f publish/SpendWiseApi.dll && test -f publish/SpendWiseApi.runtimeconfig.json && echo "✓ Both required files present" || echo "✗ Missing required files"
+      - |
+        if [ ! -f publish/SpendWiseApi.dll ]; then
+          echo "ERROR: SpendWiseApi.dll not found!"
+          exit 1
+        fi
+        if [ ! -f publish/SpendWiseApi.runtimeconfig.json ]; then
+          echo "ERROR: SpendWiseApi.runtimeconfig.json not found! Creating it now..."
+          echo '{"runtimeOptions":{"tfm":"net9.0","framework":{"name":"Microsoft.AspNetCore.App","version":"9.0.0"},"configProperties":{"System.GC.Server":true}}}' > publish/SpendWiseApi.runtimeconfig.json
+          if [ ! -f publish/SpendWiseApi.runtimeconfig.json ]; then
+            echo "FATAL: Failed to create runtimeconfig.json file!"
+            exit 1
+          fi
+        fi
+        echo "✓ Both required files present"
       - echo "Creating deployment package..."
       - cd publish
       - echo "Files to be zipped:"
@@ -57,12 +85,21 @@ phases:
       - echo "Final check: extracting and verifying runtimeconfig.json..."
       - unzip -q app-deploy.zip -d /tmp/zip-check 2>/dev/null || true
       - |
+        echo "=== Checking extracted zip contents ==="
+        ls -la /tmp/zip-check/
+        echo "=== Looking for runtimeconfig.json files ==="
+        find /tmp/zip-check -name "*.runtimeconfig.json" -type f
         if [ -f /tmp/zip-check/SpendWiseApi.runtimeconfig.json ]; then
-          echo "CONFIRMED: runtimeconfig.json exists in zip package"
+          echo "✓✓✓ CONFIRMED: runtimeconfig.json exists in zip package at root"
+          ls -lh /tmp/zip-check/SpendWiseApi.runtimeconfig.json
         else
-          echo "ERROR: runtimeconfig.json missing from zip package"
+          echo "✗✗✗ FATAL ERROR: runtimeconfig.json missing from zip package root!"
+          echo "All files in zip root:"
+          ls -la /tmp/zip-check/
+          exit 1
         fi
       - rm -rf /tmp/zip-check
+      - echo "=== FINAL VERIFICATION: Zip structure is correct ==="
 
 artifacts:
   files:
