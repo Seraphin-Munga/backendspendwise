@@ -8,38 +8,17 @@ phases:
       - chmod +x dotnet-install.sh
       - ./dotnet-install.sh --channel 9.0 --install-dir /root/.dotnet
 
-      # Force CodeBuild to use .NET 9
       - export DOTNET_ROOT=/root/.dotnet
       - export PATH=/root/.dotnet:$PATH
 
-      # HARD verification (this is critical)
-      - which dotnet
+      - echo "SDKs installed:"
       - dotnet --list-sdks
       - dotnet --version
 
-  pre_build:
-    commands:
-      - echo "Using SDK:"
-      - dotnet --version
-      - pwd
-      - ls -la
-
   build:
     commands:
-      - echo "Restoring packages..."
+      - echo "Restoring solution..."
       - dotnet restore SpendWiseApi.sln
 
-      - echo "Building solution..."
+      - echo "Building..."
       - dotnet build SpendWiseApi.sln -c Release --no-restore
-
-      - echo "Publishing application..."
-      - dotnet publish SpendWiseApi/SpendWiseApi.csproj \
-          -c Release \
-          -o publish \
-          --no-build
-
-      - ls -la publish
-
-artifacts:
-  files:
-    - '**/*'
