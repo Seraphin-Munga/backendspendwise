@@ -2,65 +2,96 @@ version: 0.2
 
 phases:
   install:
-    commands:
-      # Commands to install .NET 9 SDK using Microsoft's install script
-      - curl -L https://dot.net/v1/dotnet-install.sh | bash /dev/stdin --version 9.0.100
-      # Add the newly installed dotnet directory to the PATH and verify
-      - export PATH=$PATH:$HOME/.dotnet
-      - echo PATH updated
-      - $HOME/.dotnet/dotnet --version || dotnet --version
+    runtime-versions:
+      dotnet: 9.0
+
   pre_build:
     commands:
-      - echo Restoring NuGet packages
-      - export PATH=$PATH:$HOME/.dotnet
-      - echo Current directory
-      - pwd
-      - echo Checking for solution file
-      - ls -la *.sln 2>/dev/null || find . -maxdepth 2 -name "*.sln" -type f | head -5
+      - echo "Logging in to Amazon ECR..."
+      - aws --version
+      - echo "Current directory: $(pwd)"
+      - echo "Listing files..."
+      - ls -la
+
+  build:
+    commands:
+      - echo "Restoring NuGet packages..."
+      - dotnet restore SpendWiseApi.sln
+      - echo "Building solution..."
+      - dotnet build SpendWiseApi.sln -c Release --no-restore
+      - echo "Publishing application (framework-dependent deployment)..."
+      - dotnet publish SpendWiseApi/SpendWiseApi.csproj -c Release -o publish /p:SelfContained=false /p:GenerateRuntimeConfigurationFiles=true
+      - echo "Verifying publish output..."
+      - ls -la publish/
+      - echo "Checking for required files..."
+      - test -f publish/SpendWiseApi.dll && echo "✓ SpendWiseApi.dll found" || echo "✗ SpendWiseApi.dll NOT found"
+      - echo "Looking for runtimeconfig.json files..."
+      - 'find publish -name "*.runtimeconfig.json" -type f -exec echo "Found: {}" \; || echo "No runtimeconfig.json files found"'
+      - echo "Ensuring runtimeconfig.json exists (always create/overwrite to be safe)..."
       - |
-        export PATH=$PATH:$HOME/.dotnet
-        if [ -f "SpendWiseApi.sln" ]; then
-          dotnet restore SpendWiseApi.sln
+        if command -v python3 >/dev/null 2>&1; then
+          python3 -c "import json; data={'runtimeOptions':{'tfm':'net9.0','framework':{'name':'Microsoft.AspNetCore.App','version':'9.0.0'},'configProperties':{'System.GC.Server':True}}; json.dump(data, open('publish/SpendWiseApi.runtimeconfig.json', 'w'), indent=2)"
         else
-          echo "Solution file not found in current directory, searching..."
-          SOLUTION_FILE=$(find . -maxdepth 2 -name "SpendWiseApi.sln" -type f | head -1)
-          if [ -n "$SOLUTION_FILE" ]; then
-            echo "Found solution file at: $SOLUTION_FILE"
-            dotnet restore "$SOLUTION_FILE"
-          else
-            echo "ERROR: SpendWiseApi.sln not found"
+          echo '{"runtimeOptions":{"tfm":"net9.0","framework":{"name":"Microsoft.AspNetCore.App","version":"9.0.0"},"configProperties":{"System.GC.Server":true}}}' > publish/SpendWiseApi.runtimeconfig.json
+        fi
+      - echo "✓ SpendWiseApi.runtimeconfig.json created/updated"
+      - echo "Final verification of runtimeconfig.json..."
+      - ls -lh publish/SpendWiseApi.runtimeconfig.json
+      - echo "File contents:"
+      - cat publish/SpendWiseApi.runtimeconfig.json
+      - echo "Verifying file is readable and valid JSON..."
+      - python3 -m json.tool publish/SpendWiseApi.runtimeconfig.json > /dev/null && echo "✓ Valid JSON" || echo "✗ Invalid JSON"
+      - echo "Ensuring file has correct permissions..."
+      - chmod 644 publish/SpendWiseApi.runtimeconfig.json
+      - echo "Verifying both DLL and runtimeconfig.json exist..."
+      - |
+        if [ ! -f publish/SpendWiseApi.dll ]; then
+          echo "ERROR: SpendWiseApi.dll not found!"
+          exit 1
+        fi
+        if [ ! -f publish/SpendWiseApi.runtimeconfig.json ]; then
+          echo "ERROR: SpendWiseApi.runtimeconfig.json not found! Creating it now..."
+          echo '{"runtimeOptions":{"tfm":"net9.0","framework":{"name":"Microsoft.AspNetCore.App","version":"9.0.0"},"configProperties":{"System.GC.Server":true}}}' > publish/SpendWiseApi.runtimeconfig.json
+          if [ ! -f publish/SpendWiseApi.runtimeconfig.json ]; then
+            echo "FATAL: Failed to create runtimeconfig.json file!"
             exit 1
           fi
         fi
-  build:
-    commands:
-      # Use the dotnet CLI to build your project
-      - |
-        export PATH=$PATH:$HOME/.dotnet
-        if [ -f "SpendWiseApi.sln" ]; then
-          dotnet build SpendWiseApi.sln -c Release
-        else
-          SOLUTION_FILE=$(find . -maxdepth 2 -name "SpendWiseApi.sln" -type f | head -1)
-          dotnet build "$SOLUTION_FILE" -c Release
-        fi
-      - echo Publishing application
-      - |
-        export PATH=$PATH:$HOME/.dotnet
-        if [ -d "SpendWiseApi" ]; then
-          dotnet publish SpendWiseApi/SpendWiseApi.csproj -c Release -o publish
-        else
-          PROJECT_DIR=$(find . -maxdepth 2 -type d -name "SpendWiseApi*" | head -1)
-          dotnet publish "$PROJECT_DIR/SpendWiseApi.csproj" -c Release -o publish
-        fi
-      - echo Verifying publish output
-      - ls -la publish
+        echo "✓ Both required files present"
+      - echo "Creating deployment package..."
       - cd publish
-      - zip -r ../app-deploy.zip .
+      - echo "Files to be zipped:"
+      - ls -la
+      - echo "Creating zip with all files..."
+      - zip -r ../app-deploy.zip . -v
       - cd ..
-      - echo Deployment package created
+      - echo "Deployment package created"
+      - echo "Verifying contents of zip file..."
+      - echo "Checking for runtimeconfig.json in zip..."
+      - unzip -l app-deploy.zip | grep -i "runtimeconfig.json" && echo "✓ runtimeconfig.json found in zip" || echo "✗ WARNING: runtimeconfig.json NOT found in zip"
+      - echo "Listing all .runtimeconfig.json files in zip:"
+      - unzip -l app-deploy.zip | grep -i "\.runtimeconfig\.json" || echo "No .runtimeconfig.json files found!"
+      - echo "Listing all files in zip (first 50):"
+      - unzip -l app-deploy.zip | head -50
+      - echo "Checking for SpendWiseApi.dll in zip:"
+      - unzip -l app-deploy.zip | grep -i "SpendWiseApi\.dll" && echo "✓ DLL found" || echo "✗ DLL NOT found"
       - ls -lh app-deploy.zip
+      - echo "Final check: extracting and verifying runtimeconfig.json..."
+      - unzip -q app-deploy.zip -d /tmp/zip-check 2>/dev/null || true
+      - |
+        if [ -f /tmp/zip-check/SpendWiseApi.runtimeconfig.json ]; then
+          echo "✓✓✓ CONFIRMED: runtimeconfig.json exists in zip package"
+          ls -lh /tmp/zip-check/SpendWiseApi.runtimeconfig.json
+        else
+          echo "✗✗✗ FATAL ERROR: runtimeconfig.json missing from zip package!"
+          echo "Files in zip:"
+          unzip -l app-deploy.zip | head -20
+          exit 1
+        fi
+      - rm -rf /tmp/zip-check
 
 artifacts:
   files:
     - app-deploy.zip
   name: SpendWiseApi-$(date +%Y-%m-%d)
+
