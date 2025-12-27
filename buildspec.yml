@@ -22,3 +22,7 @@ phases:
 
       - echo "Building..."
       - dotnet build SpendWiseApi.sln -c Release --no-restore
+      
+artifacts:
+  files:
+    - '**/*'
