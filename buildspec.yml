@@ -24,7 +24,7 @@ phases:
       - echo "Verifying publish output..."
       - ls -la publish/
       - echo "Checking for required files..."
-      - test -f publish/SpendWiseApi.dll && echo "✓ SpendWiseApi.dll found" || echo "✗ SpendWiseApi.dll NOT found"
+      - "test -f publish/SpendWiseApi.dll && echo \"✓ SpendWiseApi.dll found\" || echo \"✗ SpendWiseApi.dll NOT found\""
       - echo "Looking for runtimeconfig.json files..."
       - 'find publish -name "*.runtimeconfig.json" -type f -exec echo "Found: {}" \; || echo "No runtimeconfig.json files found"'
       - echo "Ensuring runtimeconfig.json exists (always create/overwrite to be safe)..."
@@ -40,7 +40,7 @@ phases:
       - echo "File contents:"
       - cat publish/SpendWiseApi.runtimeconfig.json
       - echo "Verifying file is readable and valid JSON..."
-      - python3 -m json.tool publish/SpendWiseApi.runtimeconfig.json > /dev/null && echo "✓ Valid JSON" || echo "✗ Invalid JSON"
+      - "python3 -m json.tool publish/SpendWiseApi.runtimeconfig.json > /dev/null && echo \"✓ Valid JSON\" || echo \"✗ Invalid JSON\""
       - echo "Ensuring file has correct permissions..."
       - chmod 644 publish/SpendWiseApi.runtimeconfig.json
       - echo "Verifying both DLL and runtimeconfig.json exist..."
@@ -68,16 +68,16 @@ phases:
       - echo "Deployment package created"
       - echo "Verifying contents of zip file..."
       - echo "Checking for runtimeconfig.json in zip..."
-      - unzip -l app-deploy.zip | grep -i "runtimeconfig.json" && echo "✓ runtimeconfig.json found in zip" || echo "✗ WARNING: runtimeconfig.json NOT found in zip"
+      - "unzip -l app-deploy.zip | grep -i \"runtimeconfig.json\" && echo \"✓ runtimeconfig.json found in zip\" || echo \"✗ WARNING: runtimeconfig.json NOT found in zip\""
       - echo "Listing all .runtimeconfig.json files in zip:"
-      - unzip -l app-deploy.zip | grep -i "\.runtimeconfig\.json" || echo "No .runtimeconfig.json files found!"
+      - "unzip -l app-deploy.zip | grep -i \"\\.runtimeconfig\\.json\" || echo \"No .runtimeconfig.json files found!\""
       - echo "Listing all files in zip (first 50):"
-      - unzip -l app-deploy.zip | head -50
+      - "unzip -l app-deploy.zip | head -50"
       - echo "Checking for SpendWiseApi.dll in zip:"
-      - unzip -l app-deploy.zip | grep -i "SpendWiseApi\.dll" && echo "✓ DLL found" || echo "✗ DLL NOT found"
+      - "unzip -l app-deploy.zip | grep -i \"SpendWiseApi\\.dll\" && echo \"✓ DLL found\" || echo \"✗ DLL NOT found\""
       - ls -lh app-deploy.zip
       - echo "Final check: extracting and verifying runtimeconfig.json..."
-      - unzip -q app-deploy.zip -d /tmp/zip-check 2>/dev/null || true
+      - "unzip -q app-deploy.zip -d /tmp/zip-check 2>/dev/null || true"
       - |
         if [ -f /tmp/zip-check/SpendWiseApi.runtimeconfig.json ]; then
           echo "✓✓✓ CONFIRMED: runtimeconfig.json exists in zip package"
