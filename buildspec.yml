@@ -20,9 +20,12 @@ phases:
       - echo "Restoring solution..."
       - dotnet restore SpendWiseApi.sln
 
-      - echo "Building..."
+      - echo "Building solution..."
       - dotnet build SpendWiseApi.sln -c Release --no-restore
-      
+
+      - echo "Publishing application..."
+      - dotnet publish SpendWiseApi.sln -c Release -o publish
+
 artifacts:
   files:
-    - '**/*'
+    - publish/**/*
