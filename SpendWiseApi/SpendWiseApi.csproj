@@ -22,7 +22,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SpendWiseApi.Repository\SpendWiseApi.Repository.csproj" />
-    <ProjectReference Include="..\SpendWiseApi.Service\SpendWiseApi.Service.csproj" />
   </ItemGroup>
 
   <ItemGroup>

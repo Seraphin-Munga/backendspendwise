@@ -3,7 +3,7 @@ version: 0.2
 phases:
   install:
     commands:
-      - rm -f /codebuild/global.json || true
+      - rm -f global.json || true
       - wget https://dot.net/v1/dotnet-install.sh -O /tmp/dotnet-install.sh
       - chmod +x /tmp/dotnet-install.sh
       - /tmp/dotnet-install.sh --channel 8.0 --install-dir /usr/local/dotnet
@@ -13,12 +13,10 @@ phases:
 
   build:
     commands:
-      - dotnet restore SpendWiseApi.sln
-      - dotnet publish SpendWiseApi/SpendWiseApi.csproj -c Release -o publish
-      - echo "Publish output:"
+      - ls -la
+      - dotnet restore SpendWiseApi.sln --source https://api.nuget.org/v3/index.json
+      - dotnet publish SpendWiseAPI/SpendWiseApi.csproj -c Release -o publish
       - ls -la publish
-      - echo "Verifying runtimeconfig.json:"
-      - ls publish/*.runtimeconfig.json
       - cd publish
       - zip -r ../app-deploy.zip .
       - cd ..
