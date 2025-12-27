@@ -2,11 +2,18 @@ version: 0.2
 
 phases:
   install:
-    runtime-versions:
-      dotnet: 9.0
+    commands:
+      - wget https://dot.net/v1/dotnet-install.sh -O /tmp/dotnet-install.sh
+      - chmod +x /tmp/dotnet-install.sh
+      - /tmp/dotnet-install.sh --version 9.0.0 --install-dir /usr/local/dotnet
+      - /tmp/dotnet-install.sh --version 9.0.0 --install-dir /usr/local/dotnet --runtime aspnetcore
+      - export PATH="/usr/local/dotnet:$PATH"
+      - dotnet --version
 
   build:
     commands:
+      - export PATH="/usr/local/dotnet:$PATH"
+      - dotnet --version
       - dotnet restore SpendWiseApi.sln
       - dotnet build SpendWiseApi.sln -c Release --no-restore
       - dotnet publish SpendWiseApi/SpendWiseApi.csproj -c Release -o publish /p:SelfContained=false /p:GenerateRuntimeConfigurationFiles=true
