@@ -2,15 +2,13 @@ version: "0.2"
 
 phases:
   install:
-    runtime-versions:
-      dotnet: 9.0
     commands:
       - echo "Installing .NET 9 SDK..."
       - curl -fsSL https://dot.net/v1/dotnet-install.sh -o dotnet-install.sh
       - chmod +x dotnet-install.sh
-      - ./dotnet-install.sh --channel 9.0 --install-dir /root/.dotnet
-      - export DOTNET_ROOT=/root/.dotnet
-      - export PATH=/root/.dotnet:$PATH
+      - ./dotnet-install.sh --version 9.0.308 --install-dir /usr/local/share/dotnet
+      - export DOTNET_ROOT=/usr/local/share/dotnet
+      - export PATH=/usr/local/share/dotnet:$PATH
       - echo "Installed SDKs:"
       - dotnet --list-sdks
       - dotnet --version
