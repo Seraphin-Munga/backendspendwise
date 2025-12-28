@@ -4,7 +4,19 @@ phases:
   install:
     commands:
       - echo "Installing .NET 9 SDK..."
-      - curl -fsSL https://dot.net/v1/dotnet-install.sh -o dotnet-install.sh
+      - |
+        # Try downloading the install script with retries
+        for i in 1 2 3; do
+          if curl -fsSL https://dot.net/v1/dotnet-install.sh -o dotnet-install.sh; then
+            break
+          fi
+          echo "Attempt $i failed, retrying in 5 seconds..."
+          sleep 5
+        done
+        if [ ! -f dotnet-install.sh ]; then
+          echo "curl failed, trying wget..."
+          wget -q https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh || exit 1
+        fi
       - chmod +x dotnet-install.sh
       - ./dotnet-install.sh --version 9.0.308 --install-dir /usr/local/share/dotnet
       - export DOTNET_ROOT=/usr/local/share/dotnet
