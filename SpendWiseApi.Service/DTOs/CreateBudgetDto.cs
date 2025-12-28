@@ -20,5 +20,8 @@ public class CreateBudgetDto
 
     [Required]
     public DateTime EndDate { get; set; }
+
+    [Required]
+    public int CategoryId { get; set; }
 }
 

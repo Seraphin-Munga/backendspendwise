@@ -21,6 +21,7 @@ public class CategoryService : ICategoryService
         {
             Id = c.Id,
             Name = c.Name,
+            Emoji = c.Emoji,
             Description = c.Description,
             CreatedAt = c.CreatedAt,
             UpdatedAt = c.UpdatedAt
@@ -35,6 +36,7 @@ public class CategoryService : ICategoryService
         {
             Id = category.Id,
             Name = category.Name,
+            Emoji = category.Emoji,
             Description = category.Description,
             CreatedAt = category.CreatedAt,
             UpdatedAt = category.UpdatedAt
@@ -46,14 +48,17 @@ public class CategoryService : ICategoryService
         var category = new Category
         {
             Name = createDto.Name,
+            Emoji = createDto.Emoji,
             Description = createDto.Description,
-            UserId = userId
+            UserId = userId,
+            CreatedAt = DateTime.UtcNow
         };
         var created = await _repository.CreateCategoryAsync(category);
         return new CategoryDto
         {
             Id = created.Id,
             Name = created.Name,
+            Emoji = created.Emoji,
             Description = created.Description,
             CreatedAt = created.CreatedAt,
             UpdatedAt = created.UpdatedAt
@@ -67,12 +72,15 @@ public class CategoryService : ICategoryService
             throw new Exception("Category not found");
         
         category.Name = updateDto.Name;
+        category.Emoji = updateDto.Emoji;
         category.Description = updateDto.Description;
+        category.UpdatedAt = DateTime.UtcNow;
         var updated = await _repository.UpdateCategoryAsync(category);
         return new CategoryDto
         {
             Id = updated.Id,
             Name = updated.Name,
+            Emoji = updated.Emoji,
             Description = updated.Description,
             CreatedAt = updated.CreatedAt,
             UpdatedAt = updated.UpdatedAt

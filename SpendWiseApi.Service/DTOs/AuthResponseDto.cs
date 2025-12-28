@@ -7,5 +7,6 @@ public class AuthResponseDto
     public DateTime Expiration { get; set; }
     public bool RequiresMobileVerification { get; set; }
     public string? Message { get; set; }
+    public string? OtpCode { get; set; }
 }
 

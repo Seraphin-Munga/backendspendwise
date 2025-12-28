@@ -27,11 +27,23 @@ public class SpendWiseDbContext : IdentityDbContext<ApplicationUser>
     {
         base.OnModelCreating(modelBuilder);
 
+        // Configure ApplicationUser entity
+        modelBuilder.Entity<ApplicationUser>(entity =>
+        {
+            // Email is already unique by default in Identity (as UserName)
+            // Add unique index for MobileNumber (only for non-null values)
+            // This allows multiple NULL values but ensures uniqueness for non-null values
+            entity.HasIndex(e => e.MobileNumber)
+                  .IsUnique()
+                  .HasFilter("\"MobileNumber\" IS NOT NULL");
+        });
+
         // Configure Category entity
         modelBuilder.Entity<Category>(entity =>
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
+            entity.Property(e => e.Emoji).HasMaxLength(10);
             entity.Property(e => e.Description).HasMaxLength(500);
             entity.Property(e => e.UserId).IsRequired();
             entity.Property(e => e.CreatedAt).IsRequired();

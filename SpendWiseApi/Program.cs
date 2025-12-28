@@ -10,6 +10,7 @@ using SpendWiseApi.Repository.Interfaces;
 using SpendWiseApi.Repository.Repositories;
 using SpendWiseApi.Service.Interfaces;
 using SpendWiseApi.Service.Services;
+using SpendWiseApi.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -107,6 +108,14 @@ builder.Services.AddScoped<IEducationalContentRepository, EducationalContentRepo
 // Services
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IBudgetService, BudgetService>();
+builder.Services.AddScoped<IExpenseService, ExpenseService>();
+builder.Services.AddScoped<IIncomeService, IncomeService>();
+builder.Services.AddScoped<IReportService, ReportService>();
+builder.Services.AddScoped<ISmsService, TwilioSmsService>();
+builder.Services.AddScoped<IGroupService, GroupService>();
+builder.Services.AddScoped<ISharedExpenseService, SharedExpenseService>();
+builder.Services.AddScoped<IGroupMemberService, GroupMemberService>();
 
 var app = builder.Build();
 
@@ -116,6 +125,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// Global Exception Handler - must be registered early in the pipeline
+app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");

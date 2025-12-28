@@ -15,6 +15,9 @@ public class CreateExpenseDto
     [Required]
     public DateTime Date { get; set; }
 
+    [MaxLength(1000)]
+    public string? Notes { get; set; }
+
     [Required]
     public int CategoryId { get; set; }
 }
