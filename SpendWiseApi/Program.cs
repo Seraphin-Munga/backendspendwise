@@ -104,6 +104,7 @@ builder.Services.AddScoped<IGroupMemberRepository, GroupMemberRepository>();
 builder.Services.AddScoped<ISharedExpenseRepository, SharedExpenseRepository>();
 builder.Services.AddScoped<IExpenseShareRepository, ExpenseShareRepository>();
 builder.Services.AddScoped<IEducationalContentRepository, EducationalContentRepository>();
+builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 
 // Services
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -116,6 +117,8 @@ builder.Services.AddScoped<ISmsService, TwilioSmsService>();
 builder.Services.AddScoped<IGroupService, GroupService>();
 builder.Services.AddScoped<ISharedExpenseService, SharedExpenseService>();
 builder.Services.AddScoped<IGroupMemberService, GroupMemberService>();
+builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
+builder.Services.AddScoped<ITransactionService, TransactionService>();
 
 var app = builder.Build();
 
