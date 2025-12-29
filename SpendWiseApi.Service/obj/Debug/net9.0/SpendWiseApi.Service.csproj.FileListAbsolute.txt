@@ -13,3 +13,4 @@
 /Users/seraphin/Desktop/SpendWiseapi/SpendWiseApi.Service/obj/Debug/net9.0/refint/SpendWiseApi.Service.dll
 /Users/seraphin/Desktop/SpendWiseapi/SpendWiseApi.Service/obj/Debug/net9.0/SpendWiseApi.Service.pdb
 /Users/seraphin/Desktop/SpendWiseapi/SpendWiseApi.Service/obj/Debug/net9.0/ref/SpendWiseApi.Service.dll
+/Users/seraphin/Desktop/SpendWiseapi/SpendWiseApi.Service/obj/Debug/net9.0/SpendWiseApi.Service.sourcelink.json

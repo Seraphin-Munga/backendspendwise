@@ -149,3 +149,6 @@
 /Users/seraphin/Desktop/SpendWiseapi/SpendWiseApi/obj/Debug/net9.0/SpendWiseApi.genruntimeconfig.cache
 /Users/seraphin/Desktop/SpendWiseapi/SpendWiseApi/obj/Debug/net9.0/ref/SpendWiseApi.dll
 /Users/seraphin/Desktop/SpendWiseapi/SpendWiseApi/obj/Debug/net9.0/SpendWiseApi.sourcelink.json
+/Users/seraphin/Desktop/SpendWiseapi/SpendWiseApi/bin/Debug/net9.0/Newtonsoft.Json.dll
+/Users/seraphin/Desktop/SpendWiseapi/SpendWiseApi/bin/Debug/net9.0/nunit.framework.dll
+/Users/seraphin/Desktop/SpendWiseapi/SpendWiseApi/bin/Debug/net9.0/Twilio.dll

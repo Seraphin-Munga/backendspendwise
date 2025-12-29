@@ -12,3 +12,4 @@
 /Users/seraphin/Desktop/SpendWiseapi/SpendWiseApi.Repository/obj/Debug/net9.0/SpendWiseApi.Repository.pdb
 /Users/seraphin/Desktop/SpendWiseapi/SpendWiseApi.Repository/obj/Debug/net9.0/SpendWiseApi.Repository.genruntimeconfig.cache
 /Users/seraphin/Desktop/SpendWiseapi/SpendWiseApi.Repository/obj/Debug/net9.0/ref/SpendWiseApi.Repository.dll
+/Users/seraphin/Desktop/SpendWiseapi/SpendWiseApi.Repository/obj/Debug/net9.0/SpendWiseApi.Repository.sourcelink.json
