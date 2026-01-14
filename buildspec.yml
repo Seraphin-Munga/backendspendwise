@@ -1,0 +1,49 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo "Installing .NET 9 SDK..."
+      - |
+        # Try downloading the install script with retries
+        for i in 1 2 3; do
+          if curl -fsSL https://dot.net/v1/dotnet-install.sh -o dotnet-install.sh; then
+            break
+          fi
+          echo "Attempt $i failed, retrying in 5 seconds..."
+          sleep 5
+        done
+        if [ ! -f dotnet-install.sh ]; then
+          echo "curl failed, trying wget..."
+          wget -q https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh || exit 1
+        fi
+      - chmod +x dotnet-install.sh
+      - ./dotnet-install.sh --version 9.0.308 --install-dir /usr/local/share/dotnet
+      - export DOTNET_ROOT=/usr/local/share/dotnet
+      - export PATH=/usr/local/share/dotnet:$PATH
+      - echo "Installed SDKs:"
+      - dotnet --list-sdks
+      - dotnet --version
+
+  pre_build:
+    commands:
+      - echo "Restoring NuGet packages..."
+      - dotnet restore SpendWiseApi.sln
+
+  build:
+    commands:
+      - echo "Building solution..."
+      - dotnet build SpendWiseApi.sln -c Release --no-restore
+      - echo "Publishing application..."
+      - dotnet publish SpendWiseAPI/SpendWiseApi.csproj -c Release -o publish --no-restore
+
+  post_build:
+    commands:
+      - echo "Build completed successfully"
+      - echo "Publishing output:"
+      - ls -la publish/
+
+artifacts:
+  files:
+    - '**/*'
+  base-directory: publish
