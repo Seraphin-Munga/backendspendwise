@@ -3251,25 +3251,24 @@
     ]
   },
   "packageFolders": {
-    "/Users/seraphin/.nuget/packages/": {}
+    "/Users/seraphinngoymunga/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/seraphin/Desktop/SpendWiseapi/SpendWiseApi.Repository/SpendWiseApi.Repository.csproj",
+      "projectUniqueName": "/Users/seraphinngoymunga/Documents/SpendWiseApi/backendspendwise/SpendWiseApi.Repository/SpendWiseApi.Repository.csproj",
       "projectName": "SpendWiseApi.Repository",
-      "projectPath": "/Users/seraphin/Desktop/SpendWiseapi/SpendWiseApi.Repository/SpendWiseApi.Repository.csproj",
-      "packagesPath": "/Users/seraphin/.nuget/packages/",
-      "outputPath": "/Users/seraphin/Desktop/SpendWiseapi/SpendWiseApi.Repository/obj/",
+      "projectPath": "/Users/seraphinngoymunga/Documents/SpendWiseApi/backendspendwise/SpendWiseApi.Repository/SpendWiseApi.Repository.csproj",
+      "packagesPath": "/Users/seraphinngoymunga/.nuget/packages/",
+      "outputPath": "/Users/seraphinngoymunga/Documents/SpendWiseApi/backendspendwise/SpendWiseApi.Repository/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/Users/seraphin/.nuget/NuGet/NuGet.Config"
+        "/Users/seraphinngoymunga/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
       ],
       "sources": {
-        "/opt/homebrew/Cellar/dotnet/9.0.5/libexec/library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -3288,7 +3287,7 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "9.0.100"
+      "SdkAnalysisLevel": "9.0.300"
     },
     "frameworks": {
       "net9.0": {
@@ -3337,7 +3336,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/opt/homebrew/Cellar/dotnet/9.0.5/libexec/sdk/9.0.106/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.302/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

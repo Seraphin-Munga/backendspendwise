@@ -1,26 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "/Users/seraphin/Desktop/SpendWiseapi/SpendWiseApi/SpendWiseApi.csproj": {}
+    "/Users/seraphinngoymunga/Documents/SpendWiseApi/backendspendwise/SpendWiseApi/SpendWiseApi.csproj": {}
   },
   "projects": {
-    "/Users/seraphin/Desktop/SpendWiseapi/SpendWiseApi.Repository/SpendWiseApi.Repository.csproj": {
+    "/Users/seraphinngoymunga/Documents/SpendWiseApi/backendspendwise/SpendWiseApi.Repository/SpendWiseApi.Repository.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/seraphin/Desktop/SpendWiseapi/SpendWiseApi.Repository/SpendWiseApi.Repository.csproj",
+        "projectUniqueName": "/Users/seraphinngoymunga/Documents/SpendWiseApi/backendspendwise/SpendWiseApi.Repository/SpendWiseApi.Repository.csproj",
         "projectName": "SpendWiseApi.Repository",
-        "projectPath": "/Users/seraphin/Desktop/SpendWiseapi/SpendWiseApi.Repository/SpendWiseApi.Repository.csproj",
-        "packagesPath": "/Users/seraphin/.nuget/packages/",
-        "outputPath": "/Users/seraphin/Desktop/SpendWiseapi/SpendWiseApi.Repository/obj/",
+        "projectPath": "/Users/seraphinngoymunga/Documents/SpendWiseApi/backendspendwise/SpendWiseApi.Repository/SpendWiseApi.Repository.csproj",
+        "packagesPath": "/Users/seraphinngoymunga/.nuget/packages/",
+        "outputPath": "/Users/seraphinngoymunga/Documents/SpendWiseApi/backendspendwise/SpendWiseApi.Repository/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/seraphin/.nuget/NuGet/NuGet.Config"
+          "/Users/seraphinngoymunga/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
         ],
         "sources": {
-          "/opt/homebrew/Cellar/dotnet/9.0.5/libexec/library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -39,7 +38,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.100"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net9.0": {
@@ -88,35 +87,34 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/opt/homebrew/Cellar/dotnet/9.0.5/libexec/sdk/9.0.106/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.302/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "/Users/seraphin/Desktop/SpendWiseapi/SpendWiseApi.Service/SpendWiseApi.Service.csproj": {
+    "/Users/seraphinngoymunga/Documents/SpendWiseApi/backendspendwise/SpendWiseApi.Service/SpendWiseApi.Service.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/seraphin/Desktop/SpendWiseapi/SpendWiseApi.Service/SpendWiseApi.Service.csproj",
+        "projectUniqueName": "/Users/seraphinngoymunga/Documents/SpendWiseApi/backendspendwise/SpendWiseApi.Service/SpendWiseApi.Service.csproj",
         "projectName": "SpendWiseApi.Service",
-        "projectPath": "/Users/seraphin/Desktop/SpendWiseapi/SpendWiseApi.Service/SpendWiseApi.Service.csproj",
-        "packagesPath": "/Users/seraphin/.nuget/packages/",
-        "outputPath": "/Users/seraphin/Desktop/SpendWiseapi/SpendWiseApi.Service/obj/",
+        "projectPath": "/Users/seraphinngoymunga/Documents/SpendWiseApi/backendspendwise/SpendWiseApi.Service/SpendWiseApi.Service.csproj",
+        "packagesPath": "/Users/seraphinngoymunga/.nuget/packages/",
+        "outputPath": "/Users/seraphinngoymunga/Documents/SpendWiseApi/backendspendwise/SpendWiseApi.Service/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/seraphin/.nuget/NuGet/NuGet.Config"
+          "/Users/seraphinngoymunga/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
         ],
         "sources": {
-          "/opt/homebrew/Cellar/dotnet/9.0.5/libexec/library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "/Users/seraphin/Desktop/SpendWiseapi/SpendWiseApi.Repository/SpendWiseApi.Repository.csproj": {
-                "projectPath": "/Users/seraphin/Desktop/SpendWiseapi/SpendWiseApi.Repository/SpendWiseApi.Repository.csproj"
+              "/Users/seraphinngoymunga/Documents/SpendWiseApi/backendspendwise/SpendWiseApi.Repository/SpendWiseApi.Repository.csproj": {
+                "projectPath": "/Users/seraphinngoymunga/Documents/SpendWiseApi/backendspendwise/SpendWiseApi.Repository/SpendWiseApi.Repository.csproj"
               }
             }
           }
@@ -131,7 +129,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.100"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net9.0": {
@@ -174,38 +172,37 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/opt/homebrew/Cellar/dotnet/9.0.5/libexec/sdk/9.0.106/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.302/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "/Users/seraphin/Desktop/SpendWiseapi/SpendWiseApi/SpendWiseApi.csproj": {
+    "/Users/seraphinngoymunga/Documents/SpendWiseApi/backendspendwise/SpendWiseApi/SpendWiseApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/seraphin/Desktop/SpendWiseapi/SpendWiseApi/SpendWiseApi.csproj",
+        "projectUniqueName": "/Users/seraphinngoymunga/Documents/SpendWiseApi/backendspendwise/SpendWiseApi/SpendWiseApi.csproj",
         "projectName": "SpendWiseApi",
-        "projectPath": "/Users/seraphin/Desktop/SpendWiseapi/SpendWiseApi/SpendWiseApi.csproj",
-        "packagesPath": "/Users/seraphin/.nuget/packages/",
-        "outputPath": "/Users/seraphin/Desktop/SpendWiseapi/SpendWiseApi/obj/",
+        "projectPath": "/Users/seraphinngoymunga/Documents/SpendWiseApi/backendspendwise/SpendWiseApi/SpendWiseApi.csproj",
+        "packagesPath": "/Users/seraphinngoymunga/.nuget/packages/",
+        "outputPath": "/Users/seraphinngoymunga/Documents/SpendWiseApi/backendspendwise/SpendWiseApi/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/seraphin/.nuget/NuGet/NuGet.Config"
+          "/Users/seraphinngoymunga/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
         ],
         "sources": {
-          "/opt/homebrew/Cellar/dotnet/9.0.5/libexec/library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net9.0": {
             "targetAlias": "net9.0",
             "projectReferences": {
-              "/Users/seraphin/Desktop/SpendWiseapi/SpendWiseApi.Repository/SpendWiseApi.Repository.csproj": {
-                "projectPath": "/Users/seraphin/Desktop/SpendWiseapi/SpendWiseApi.Repository/SpendWiseApi.Repository.csproj"
+              "/Users/seraphinngoymunga/Documents/SpendWiseApi/backendspendwise/SpendWiseApi.Repository/SpendWiseApi.Repository.csproj": {
+                "projectPath": "/Users/seraphinngoymunga/Documents/SpendWiseApi/backendspendwise/SpendWiseApi.Repository/SpendWiseApi.Repository.csproj"
               },
-              "/Users/seraphin/Desktop/SpendWiseapi/SpendWiseApi.Service/SpendWiseApi.Service.csproj": {
-                "projectPath": "/Users/seraphin/Desktop/SpendWiseapi/SpendWiseApi.Service/SpendWiseApi.Service.csproj"
+              "/Users/seraphinngoymunga/Documents/SpendWiseApi/backendspendwise/SpendWiseApi.Service/SpendWiseApi.Service.csproj": {
+                "projectPath": "/Users/seraphinngoymunga/Documents/SpendWiseApi/backendspendwise/SpendWiseApi.Service/SpendWiseApi.Service.csproj"
               }
             }
           }
@@ -220,7 +217,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.100"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net9.0": {
@@ -264,7 +261,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/opt/homebrew/Cellar/dotnet/9.0.5/libexec/sdk/9.0.106/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.302/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
